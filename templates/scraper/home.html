@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scraper Demo</title>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; margin: 2rem; }
+      button { padding: 0.6rem 1rem; font-size: 1rem; }
+      pre { background: #111; color: #eee; padding: 1rem; border-radius: 8px; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <h1>Django + Selenium Scraper</h1>
+    <p>This demo hits Selenium's test page, submits a form, and returns the result.</p>
+    <button id="run">Run Scrape</button>
+    <pre id="out">Click "Run Scrape" to start…</pre>
+    <script>
+      const runBtn = document.getElementById('run');
+      const out = document.getElementById('out');
+      async function run() {
+        out.textContent = 'Running…';
+        try {
+          const res = await fetch('{% url "run_scrape" %}');
+          const ct = res.headers.get('content-type') || '';
+          const body = ct.includes('application/json') ? await res.json() : await res.text();
+          if (typeof body === 'string') {
+            out.textContent = body;
+          } else {
+            out.textContent = JSON.stringify(body, null, 2);
+          }
+        } catch (e) {
+          out.textContent = 'Error: ' + e;
+        }
+      }
+      runBtn.addEventListener('click', run);
+    </script>
+  </body>
+  </html>
+
+
